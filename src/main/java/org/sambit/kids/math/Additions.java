@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Additions implements Equations{
+public class Additions implements EquationsGenerator {
 
     /**
      * @param numberOfEquations
@@ -12,16 +12,14 @@ public class Additions implements Equations{
      * @return
      */
     @Override
-    public List<String> generateEquations(Integer numberOfEquations, Integer ceiling) {
+    public List<Equation> generateEquations(Integer numberOfEquations, Integer ceiling) {
         Random random = new Random();
-        List<String> listOfEquations = new ArrayList<>();
+        List<Equation> listOfEquations = new ArrayList<Equation>();
 
         for (var idx = 1; idx <= numberOfEquations; idx++) {
-            if(idx % 3 == 0) {
-                listOfEquations.add(String.format("%d + %d = \n", random.nextInt(ceiling) + 1, random.nextInt(ceiling) + 1));
-            } else {
-                listOfEquations.add(String.format("%d + %d = \t\t\t", random.nextInt(ceiling) + 1, random.nextInt(ceiling) + 1));
-            }
+            listOfEquations.add(
+                    new Equation(random.nextInt(ceiling) + 1, random.nextInt(ceiling) + 1, "+")
+            );
         }
 
         return listOfEquations;
