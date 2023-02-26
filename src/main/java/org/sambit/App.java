@@ -4,6 +4,7 @@ import org.sambit.kids.math.*;
 import org.sambit.kids.math.print.equations.PrintEquations;
 import org.sambit.kids.math.print.equations.PrintToConsole;
 import org.sambit.kids.math.print.equations.PrintToWordDoc;
+import org.sambit.kids.math.print.equations.WordDocPrintFormat;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +32,7 @@ public class App
             case 1:
             default:
                 equation = new Additions();
-                equations = equation.generateEquations(240, 20);
+                equations = equation.generateEquations(40, 20);
                 break;
             case 2:
                 equation = new RandomStandardNumberTable();
@@ -43,7 +44,8 @@ public class App
                 break;
         }
 
-        PrintEquations printer = new PrintToWordDoc();
+        PrintEquations printer = new PrintToWordDoc(WordDocPrintFormat.MULTI_LINE);
+
         printer.print(equations);
 
 //        Utils.generateWordDoc(equations);
