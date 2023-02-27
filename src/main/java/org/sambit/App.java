@@ -32,7 +32,7 @@ public class App
             case 1:
             default:
                 equation = new Additions();
-                equations = equation.generateEquations(40, 20);
+                equations = equation.generateEquations(42, 20);
                 break;
             case 2:
                 equation = new RandomStandardNumberTable();
