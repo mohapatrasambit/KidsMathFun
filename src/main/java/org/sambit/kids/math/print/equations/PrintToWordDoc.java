@@ -3,7 +3,10 @@ package org.sambit.kids.math.print.equations;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
+import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHeightRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STOnOff;
 import org.sambit.kids.math.Equation;
@@ -28,7 +31,7 @@ public class PrintToWordDoc implements PrintEquations{
      */
     @Override
     public void print(List<Equation> equations) {
-        var doc = createDocumentWithHeader();
+        var doc = createDocumentWithHeaderV2();
 
         switch (this.printFormat) {
             case SINGLE_LINE:
@@ -40,14 +43,85 @@ public class PrintToWordDoc implements PrintEquations{
         }
     }
 
+    private XWPFDocument createDocumentWithHeaderV2() {
+        XWPFDocument doc = new XWPFDocument();
+        XWPFHeader header = doc.createHeader(HeaderFooterType.DEFAULT);
+        XWPFTable tableNameAndTime = header.createTable(2,2);
+
+        CTSectPr sectPr = doc.getDocument().getBody().getSectPr();
+        if (sectPr == null) sectPr = doc.getDocument().getBody().addNewSectPr();
+        CTPageMar pageMar = sectPr.getPgMar();
+        if (pageMar == null) pageMar = sectPr.addNewPgMar();
+        // set top page margin 0, so header can be at absolute top
+        pageMar.setTop(BigInteger.valueOf(0));
+        pageMar.setBottom(BigInteger.valueOf(0));
+        pageMar.setHeader(BigInteger.valueOf(20 * 10));
+        pageMar.setFooter(BigInteger.valueOf(20 * 10));
+
+        tableNameAndTime.setWidth("96%");
+        tableNameAndTime.setCellMargins(0, 300, 0, 300);
+
+        var nameRow = tableNameAndTime.getRow(0);
+        var nameLabelCell = nameRow.getTableCells().get(0);
+
+        nameLabelCell.setWidth("24%");
+        nameLabelCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        nameRow.setHeight((int)(600)); //Height is set with twipsPerInch, which is 1440 per inch.
+        nameRow.getCtRow().getTrPr().getTrHeightArray(0).setHRule(STHeightRule.EXACT); //set w:hRule="exact"
+        nameLabelCell.getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
+        var nameLabelCellRun = createRun(nameLabelCell.getParagraphs().get(0), 12);
+        nameLabelCellRun.setText("Name: ");
+
+        var nameEntryCell = nameRow.getCell(1);
+        nameEntryCell.setWidth("72%");;
+        nameEntryCell.getCTTc().getTcPr().addNewGridSpan();
+        nameEntryCell.getCTTc().getTcPr().getGridSpan().setVal(BigInteger.valueOf((long)3));
+
+        var timeRow = tableNameAndTime.getRow(1);
+        timeRow.setHeight((int)(600)); //Height is set with twipsPerInch, which is 1440 per inch.
+        timeRow.getCtRow().getTrPr().getTrHeightArray(0).setHRule(STHeightRule.EXACT); //set w:hRule="exact"
+
+        var startTimeLabelCell = timeRow.getCell(0);
+        startTimeLabelCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        startTimeLabelCell.setWidth("24%");
+        startTimeLabelCell.getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
+
+        var startTimeCellRun = createRun(startTimeLabelCell.getParagraphs().get(0), 12);
+        startTimeCellRun.setText("Start time: ");
+
+        timeRow.getCell(1).setWidth("24%"); // Start time entry cell
+
+        var endTimeCell = timeRow.createCell();
+        endTimeCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        endTimeCell.getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
+        endTimeCell.setWidth("24%");
+
+        var endTimeCellRun = createRun(endTimeCell.getParagraphs().get(0), 12);
+        endTimeCellRun.setText("End time: ");
+
+        // End time entry cell
+        timeRow.createCell();
+        timeRow.getCell(3).setWidth("24%");
+
+        return doc;
+    }
+
+    @Deprecated
     private XWPFDocument createDocumentWithHeader() {
             XWPFDocument doc = new XWPFDocument();
+
             XWPFTable tableNameAndTime = doc.createTable();
             tableNameAndTime.setWidth("96%");
             tableNameAndTime.setCellMargins(0, 300, 0, 300);
 
             var nameRow = tableNameAndTime.getRow(0);
+            if(nameRow == null) {
+                nameRow = tableNameAndTime.createRow();
+            }
             var nameLabelCell = nameRow.getCell(0);
+            if(nameLabelCell  == null) {
+                nameLabelCell = nameRow.createCell();
+            }
             nameLabelCell.setWidth("24%");
             nameLabelCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             nameRow.setHeight((int)(600)); //Height is set with twipsPerInch, which is 1440 per inch.
@@ -116,7 +190,7 @@ public class PrintToWordDoc implements PrintEquations{
 
                 answerRow = table.createRow(); // answer row
                 createRun(answerRow.getCell(colIdx).getParagraphs().get(0)).setText("  ");
-                answerRow.setHeight((int)(900)); //Height is set with twipsPerInch, which is 1440 per inch.
+                answerRow.setHeight((int)(850)); //Height is set with twipsPerInch, which is 1440 per inch.
                 answerRow.getCtRow().getTrPr().getTrHeightArray(0).setHRule(STHeightRule.EXACT); //set w:hRule="exact"
 
             }
