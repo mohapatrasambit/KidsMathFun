@@ -4,7 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
-import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.TableRowAlign;
+import org.apache.poi.xwpf.usermodel.TableWidthType;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFHeader;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHeightRule;
@@ -47,24 +56,27 @@ public class PrintToWordDoc implements PrintEquations{
         XWPFDocument doc = new XWPFDocument();
         XWPFHeader header = doc.createHeader(HeaderFooterType.DEFAULT);
         XWPFTable tableNameAndTime = header.createTable(2,2);
+        tableNameAndTime.setTableAlignment(TableRowAlign.CENTER);
 
         CTSectPr sectPr = doc.getDocument().getBody().getSectPr();
         if (sectPr == null) sectPr = doc.getDocument().getBody().addNewSectPr();
         CTPageMar pageMar = sectPr.getPgMar();
         if (pageMar == null) pageMar = sectPr.addNewPgMar();
-        // set top page margin 0, so header can be at absolute top
-        pageMar.setTop(BigInteger.valueOf(0));
-        pageMar.setBottom(BigInteger.valueOf(0));
-        pageMar.setHeader(BigInteger.valueOf(20 * 10));
-        pageMar.setFooter(BigInteger.valueOf(20 * 10));
+        // set top page margin enough to accommodate header and not to cut off any during printing
+        pageMar.setTop(BigInteger.valueOf(2100));
+        pageMar.setBottom(BigInteger.valueOf(50 * 10));
+        pageMar.setLeft(BigInteger.valueOf(70 * 10));
+        pageMar.setRight(BigInteger.valueOf(70 * 10));
+        pageMar.setHeader(BigInteger.valueOf(50 * 10));
+        pageMar.setFooter(BigInteger.valueOf(0 * 10));
 
-        tableNameAndTime.setWidth("96%");
+        tableNameAndTime.setWidth("100%");
         tableNameAndTime.setCellMargins(0, 300, 0, 300);
 
         var nameRow = tableNameAndTime.getRow(0);
         var nameLabelCell = nameRow.getTableCells().get(0);
 
-        nameLabelCell.setWidth("24%");
+        nameLabelCell.setWidth("25%");
         nameLabelCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
         nameRow.setHeight((int)(600)); //Height is set with twipsPerInch, which is 1440 per inch.
         nameRow.getCtRow().getTrPr().getTrHeightArray(0).setHRule(STHeightRule.EXACT); //set w:hRule="exact"
@@ -73,7 +85,7 @@ public class PrintToWordDoc implements PrintEquations{
         nameLabelCellRun.setText("Name: ");
 
         var nameEntryCell = nameRow.getCell(1);
-        nameEntryCell.setWidth("72%");;
+        nameEntryCell.setWidth("45%");;
         nameEntryCell.getCTTc().getTcPr().addNewGridSpan();
         nameEntryCell.getCTTc().getTcPr().getGridSpan().setVal(BigInteger.valueOf((long)3));
 
@@ -83,25 +95,25 @@ public class PrintToWordDoc implements PrintEquations{
 
         var startTimeLabelCell = timeRow.getCell(0);
         startTimeLabelCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-        startTimeLabelCell.setWidth("24%");
+        startTimeLabelCell.setWidth("25%");
         startTimeLabelCell.getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
 
         var startTimeCellRun = createRun(startTimeLabelCell.getParagraphs().get(0), 12);
         startTimeCellRun.setText("Start time: ");
 
-        timeRow.getCell(1).setWidth("24%"); // Start time entry cell
+        timeRow.getCell(1).setWidth("25%"); // Start time entry cell
 
         var endTimeCell = timeRow.createCell();
         endTimeCell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
         endTimeCell.getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
-        endTimeCell.setWidth("24%");
+        endTimeCell.setWidth("25%");
 
         var endTimeCellRun = createRun(endTimeCell.getParagraphs().get(0), 12);
         endTimeCellRun.setText("End time: ");
 
         // End time entry cell
         timeRow.createCell();
-        timeRow.getCell(3).setWidth("24%");
+        timeRow.getCell(3).setWidth("25%");
 
         return doc;
     }
@@ -184,7 +196,7 @@ public class PrintToWordDoc implements PrintEquations{
                 table.getRow(0).addNewTableCell().setWidth("32");
                 table.getRow(0).addNewTableCell().setWidth("32");
 
-                rowX = table.createRow();
+                rowX = table.getRow(0);
                 rowY = table.createRow();
                 rowZ = table.createRow();
 

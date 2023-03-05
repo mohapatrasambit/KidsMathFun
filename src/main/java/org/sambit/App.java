@@ -32,11 +32,11 @@ public class App
             case 1:
             default:
                 equation = new Additions();
-                equations = equation.generateEquations(57, 15);
+                equations = equation.generateEquations(72, 15);
                 break;
             case 2:
                 equation = new RandomStandardNumberTable();
-                equations = equation.generateEquations(120, 12);
+                equations = equation.generateEquations(72, 12);
                 break;
             case 3:
                 equation = new Multiplication();
