@@ -1,4 +1,4 @@
-package org.sambit.kids.math;
+package org.sambit.kids.math.equations;
 
 import java.util.ArrayList;
 import java.util.List;

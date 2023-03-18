@@ -1,7 +1,6 @@
-package org.sambit.kids.math.print.equations;
+package org.sambit.kids.math.equations.print;
 
-import org.sambit.kids.math.Equation;
-import org.sambit.kids.math.EquationsGenerator;
+import org.sambit.kids.math.equations.Equation;
 
 import java.util.List;
 
