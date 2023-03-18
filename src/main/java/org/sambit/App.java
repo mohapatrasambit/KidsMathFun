@@ -1,10 +1,9 @@
 package org.sambit;
 
-import org.sambit.kids.math.*;
-import org.sambit.kids.math.print.equations.PrintEquations;
-import org.sambit.kids.math.print.equations.PrintToConsole;
-import org.sambit.kids.math.print.equations.PrintToWordDoc;
-import org.sambit.kids.math.print.equations.WordDocPrintFormat;
+import org.sambit.kids.math.equations.*;
+import org.sambit.kids.math.equations.print.PrintEquations;
+import org.sambit.kids.math.equations.print.PrintToWordDoc;
+import org.sambit.kids.math.equations.print.WordDocPrintFormat;
 
 import java.io.IOException;
 import java.util.List;

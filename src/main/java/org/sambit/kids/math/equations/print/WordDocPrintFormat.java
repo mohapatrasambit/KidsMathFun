@@ -1,4 +1,4 @@
-package org.sambit.kids.math.print.equations;
+package org.sambit.kids.math.equations.print;
 
 public enum WordDocPrintFormat {
     SINGLE_LINE,

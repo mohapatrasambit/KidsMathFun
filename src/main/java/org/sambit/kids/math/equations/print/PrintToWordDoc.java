@@ -1,4 +1,4 @@
-package org.sambit.kids.math.print.equations;
+package org.sambit.kids.math.equations.print;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHeightRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STOnOff;
-import org.sambit.kids.math.Equation;
+import org.sambit.kids.math.equations.Equation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
