@@ -252,20 +252,22 @@ public class PrintToWordDoc implements PrintEquations{
     private void printInSingleLineFormat(List<Equation> equations, XWPFDocument doc) {
         XWPFParagraph p1 = doc.createParagraph();
         p1.setAlignment(ParagraphAlignment.LEFT);
-        p1.setSpacingBetween(1);
+        p1.setSpacingBetween(1.5);
 
         XWPFRun r1 = p1.createRun();
         r1.setBold(true);
         r1.setFontFamily("Verdana");
+        r1.setFontSize(19);
         r1.setTextPosition(100);
 
         for (var idx = 0; idx < equations.size(); idx++) {
             var equation = equations.get(idx);
-            r1.setText(equation.getLeft().toString() + " ");
-            r1.setText(equation.getOperator() + " ");
-            r1.setText(equation.getRight().toString() + " = ");
+            r1.setText(
+                    equation.getLeft().toString() + " " +
+                    equation.getOperator() + " " +
+                    equation.getRight().toString() + " = ");
 
-            if ((idx + 1) % 3 == 0) {
+            if ((idx +1) % 3 == 0) {
                 r1.addBreak();
             } else {
                 r1.setText("\t\t\t");
